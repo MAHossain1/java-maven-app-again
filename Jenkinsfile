@@ -9,7 +9,7 @@ pipeline {
         stage('Build Jar') {
             steps {
                 echo 'Building JAR..'
-                sh 'mvn package'
+                sh 'mvn package -U'
             }
         }
         stage('Build the Docker Image') {
