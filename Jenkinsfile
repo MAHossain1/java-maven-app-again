@@ -76,5 +76,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Commit version update') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'my-github-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                        sh 'git config --global user.email "jenkins@example.com"'
+                        sh 'git config --global user.name "Jenkins"'
+
+                        sh 'git status'
+                        sh 'git branch'
+                        sh 'git config --list'
+
+                        sh "git remote set-url origin https://${USERNAME}:${PASSWORD}@github.com/MAHossain1/java-maven-app-again.git"
+                        sh 'git add .'
+                        sh 'git commit -m "Incrementing the version of the application"'
+                        sh 'git push origin HEAD:main'   
+                    }    
+                }
+            }
+        }
     }
 }
