@@ -11,6 +11,7 @@ def buildImage() {
         sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
         sh 'docker push arman04/java-maven-app:jma-3.1.0'
     }
+    echo 'docker image built and pushed to docker hub'
 } 
 
 def deployApp() {
