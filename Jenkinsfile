@@ -78,7 +78,7 @@ pipeline {
         }
 
         // 
-      stage('Commit version update') {
+        stage('Commit version update') {
             steps {
                 script {
                     sh 'sudo chown -R jenkins:jenkins .'
