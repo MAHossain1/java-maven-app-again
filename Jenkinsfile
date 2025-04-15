@@ -39,40 +39,43 @@ pipeline {
             }
         }
 
-        stage('Increment version') {
-            steps {
-                script {
-                    echo "Incrementing the version of the application"
-                    sh 'mvn build-helper:parse-version versions:set \
-                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
-                        versions:commit'
-                    def matcher = readFile('pom.xml') =~ '<version>(.*)</version>'
-                    def version = matcher[0][1]
-                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
-                }
-            }
-        }
+        // stage('Increment version') {
+        //     steps {
+        //         script {
+        //             echo "Incrementing the version of the application"
+        //             sh 'mvn build-helper:parse-version versions:set \
+        //                 -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+        //                 versions:commit'
+        //             def matcher = readFile('pom.xml') =~ '<version>(.*)</version>'
+        //             def version = matcher[0][1]
+        //             env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+        //         }
+        //     }
+        // }
 
 
 
-        stage('Build Jar') {
-            steps {
-                script {
-                    gv.buildJar()
-                }
-            }
-        }
-        stage('Build the Docker Image') {
-            steps {
-              script {
-                gv.buildImage()
-              }
-            }
-        }
+        // stage('Build Jar') {
+        //     steps {
+        //         script {
+        //             gv.buildJar()
+        //         }
+        //     }
+        // }
+        // stage('Build the Docker Image') {
+        //     steps {
+        //       script {
+        //         gv.buildImage()
+        //       }
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 script {
-                    gv.deployApp()
+                    def dockerCmd = "docker run -d -p 3080:3080 arman04/java-maven-app:1.1.2-2"
+                    sshagent(['ec2-server-key']) {
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@13.201.91.122 ${dockerCmd}"
+                    }
                 }
             }
         }
