@@ -72,9 +72,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def dockerCmd = "docker run -d -p 3080:3080 arman04/java-maven-app:1.1.2-2"
+                    def dockerCmd = "docker run -d -p 8080:8080 arman04/java-maven-app:1.1.2-2"
                     sshagent(['ec2-server-key']) {
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@13.201.91.122 ${dockerCmd}"
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@13.235.23.129 ${dockerCmd}"
                     }
                 }
             }
