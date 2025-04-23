@@ -85,8 +85,8 @@ pipeline {
                 script {
                     echo "Deploying docker image on EC2 using docker-compose.yml"
 
-                    // ssh-keygen -f ~/.ssh/known_hosts -R 13.235.23.129 || true
-                    // ssh-keyscan -H 13.235.23.129 >> ~/.ssh/known_hosts
+                    ssh-keygen -f ~/.ssh/known_hosts -R 13.235.23.129 || true
+                    ssh-keyscan -H 13.235.23.129 >> ~/.ssh/known_hosts
 
                     def dockerComposeCmd = "docker-compose -f docker-compose.yaml up --detach"
                     sshagent(['ec2-server-key']) {
