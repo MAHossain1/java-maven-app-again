@@ -170,6 +170,7 @@ pipeline {
                         sh 'git remote set-url origin git@github.com:MAHossain1/java-maven-app-again.git'
                         sh 'git status'
                         sh 'git add .'
+                        sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
                         sh '''
                             if git status --porcelain | grep .; then
                                 git commit -m "Incrementing the version of the application"
@@ -177,6 +178,7 @@ pipeline {
                                 echo "No changes to commit"
                             fi
                         '''
+
                         sh 'git push origin HEAD:jenkins-jobs'
                     }
                 }
