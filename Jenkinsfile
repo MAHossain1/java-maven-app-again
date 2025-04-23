@@ -160,5 +160,28 @@ pipeline {
         //         }
         //     }
         // }
+
+        stage('Commit version update') {
+            steps {
+                script {
+                    sshagent(['github-ssh-key']) {
+                        sh 'git config --global user.email "jenkins@example.com"'
+                        sh 'git config --global user.name "Jenkins"'
+                        sh 'git remote set-url origin git@github.com:MAHossain1/java-maven-app-again.git'
+                        sh 'git status'
+                        sh 'git add .'
+                        sh '''
+                            if git status --porcelain | grep .; then
+                                git commit -m "Incrementing the version of the application"
+                            else
+                                echo "No changes to commit"
+                            fi
+                        '''
+                        sh 'git push origin HEAD:jenkins-jobs'
+                    }
+                }
+            }
+        }
+
     }
 }
