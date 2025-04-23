@@ -39,36 +39,36 @@ pipeline {
             }
         }
 
-        // stage('Increment version') {
-        //     steps {
-        //         script {
-        //             echo "Incrementing the version of the application"
-        //             sh 'mvn build-helper:parse-version versions:set \
-        //                 -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
-        //                 versions:commit'
-        //             def matcher = readFile('pom.xml') =~ '<version>(.*)</version>'
-        //             def version = matcher[0][1]
-        //             env.IMAGE_NAME = "$version-$BUILD_NUMBER"
-        //         }
-        //     }
-        // }
+        stage('Increment version') {
+            steps {
+                script {
+                    echo "Incrementing the version of the application"
+                    sh 'mvn build-helper:parse-version versions:set \
+                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                        versions:commit'
+                    def matcher = readFile('pom.xml') =~ '<version>(.*)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                }
+            }
+        }
 
 
 
-        // stage('Build Jar') {
-        //     steps {
-        //         script {
-        //             gv.buildJar()
-        //         }
-        //     }
-        // }
-        // stage('Build the Docker Image') {
-        //     steps {
-        //       script {
-        //         gv.buildImage()
-        //       }
-        //     }
-        // }
+        stage('Build App') {
+            steps {
+                script {
+                    gv.buildJar()
+                }
+            }
+        }
+        stage('Build the Docker Image') {
+            steps {
+              script {
+                gv.buildImage()
+              }
+            }
+        }
         // stage('Deploy') {
         //     steps {
         //         script {
@@ -97,7 +97,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying docker image on EC2 using docker-compose.yml"
-                    def shellCmd = "bash ./server-cmds.sh"
+                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
                     sshagent(['ec2-server-key']) {
                         sh "scp server-cmds.sh ec2-user@13.127.254.117:/home/ec2-user/"
                         sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@13.127.254.117:/home/ec2-user/"

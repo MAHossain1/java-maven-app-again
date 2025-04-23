@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   java-maven-app:
-    image: arman04/java-maven-app:1.1.2-2
+    image: ${IMAGE_NAME}
     ports:
       - 8080:8080
 
